@@ -1,0 +1,34 @@
+name: Kernel Builder
+run-name: Kernel Builder
+
+on:
+  push:
+    branches: [ Stable ]
+    repo: [   ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: nexgang/ubuntu:latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Kernel Builder
+        run: 
+          git config --global user.name "${GITHUB_USER}"
+          git config --global user.email "${GITHUB_EMAIL}"
+          echo "Cloning kernel"
+          git clone --depth=1 $repo -b $branches kernel && cd kernel
+          mv /home/kerbul/marble.sh /home/kerbul/kernel
+          source marble.sh
+        env:
+           token: ${{ secrets.TOKEN }}
+           chat_id: ${{ secrets.CHAT_ID }}
+           host: ${{ secrets.HOST }}
+           build_user: ${{ secrets.BUILD_USER }}
+           github_email: ${{ secrets.EMAIL }}
+           github_token: ${{ secrets.API_TOKEN_GITHUB }}
+           github_user: ${{ secrets.USERNAME }}
